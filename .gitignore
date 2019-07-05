@@ -7,5 +7,4 @@ annot/*
 xml/*
 check_train_fail.txt
 check_train_pass.txt
-mydata_train.txt
 file_names.txt
