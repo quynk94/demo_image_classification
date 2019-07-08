@@ -2,6 +2,7 @@ __pycache__
 images/*
 old_images/*
 raw_images/*
+images*/*
 videos/*
 annot/*
 xml/*

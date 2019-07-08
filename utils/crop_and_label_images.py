@@ -29,56 +29,69 @@ def process(dataset):
 def crop_and_label_images(imagePath, count):
     print("Select roi")
     image = cv2.imread(imagePath)
-    imageClone = image.copy()
+    imageClone = draw_grid(image.copy())
     data = []
-    while True:
-        r = cv2.selectROI(imageClone)
-        if r[2] == 0 or r[3] == 0:
-            break
+    # while True:
+    r = cv2.selectROI(imageClone)
+    if r[2] == 0 or r[3] == 0:
+        return
 
-        print("Select class")
-        print("Press ESC to reset")
-        print("0 - blue")
-        print("1 - red")
-        print("2 - green")
-        print("3 - yellow_1")
-        print("4 - yellow_2")
+    print("Select class")
+    print("Press ESC to reset")
+    print("0 - blue")
+    print("1 - red")
+    print("2 - green")
+    print("3 - yellow_1")
+    print("4 - yellow_2")
 
-        k = cv2.waitKey(3000)
-        print(k)
-        if k % 256 == 48:
-            print("Class 0 - blue")
-            label = "0"
-        elif k % 256 == 49:
-            print("Class 1 - red")
-            label = "1"
-        elif k % 256 == 50:
-            print("Class 2 - green")
-            label = "2"
-        elif k % 256 == 51:
-            print("Class 3 - yellow_1")
-            label = "3"
-        elif k % 256 == 52:
-            print("Class 4 - yellow_2")
-            label = "4"
-        elif k % 256 == 27:
-            data = []
-            imageClone = image.copy()
-            continue
-        else:
-            print("Too slow")
-            continue
+    label = "2"
+        # k = cv2.waitKey(3000)
+        # print(k)
+        # if k % 256 == 48:
+        #     print("Class 0 - blue")
+        #     label = "0"
+        # elif k % 256 == 49:
+        #     print("Class 1 - red")
+        #     label = "1"
+        # elif k % 256 == 50:
+        #     print("Class 2 - green")
+        #     label = "2"
+        # elif k % 256 == 51:
+        #     print("Class 3 - yellow_1")
+        #     label = "3"
+        # elif k % 256 == 52:
+        #     print("Class 4 - yellow_2")
+        #     label = "4"
+        # elif k % 256 == 27:
+        #     data = []
+        #     imageClone = image.copy()
+        #     continue
+        # else:
+        #     print("Too slow")
+        #     continue
 
-        cv2.putText(imageClone, label, (r[0], r[1] - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3)
-        cv2.rectangle(imageClone, (r[0], r[1]), (r[0]+r[2], r[1]+r[3]),
-                      (0, 0, 255), 3)
-        line = str(r[0]) + "," + str(r[1]) + "," + \
-            str(r[0]+r[2]) + "," + str(r[1]+r[3]) + "," + str(label)
-        data.append(line)
+        # cv2.putText(imageClone, label, (r[0], r[1] - 10),
+        #             cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3)
+        # cv2.rectangle(imageClone, (r[0], r[1]), (r[0]+r[2], r[1]+r[3]),
+        #               (0, 0, 255), 3)
+    line = str(r[0]) + "," + str(r[1]) + "," + \
+        str(r[0]+r[2]) + "," + str(r[1]+r[3]) + "," + str(label)
+    data.append(line)
 
     if len(data) > 0:
         f = open("mydata_train.txt", "a+")
         f.write("%s %s\n" %
                 (imagePath, " ".join(data)))
         f.close()
+
+
+def draw_grid(img):
+    grid = 10
+    color = (225, 228, 196)
+
+    for i in range(1, grid):
+        y = int(img.shape[1]/grid * i)
+        x = int(img.shape[0] / grid * i)
+        cv2.line(img, (y, 0), (y, img.shape[0]), color, 1, 1)
+        cv2.line(img, (0, x), (img.shape[1], x), color, 1, 1)
+    return img
